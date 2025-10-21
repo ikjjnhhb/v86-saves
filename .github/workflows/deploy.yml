@@ -1,22 +1,33 @@
-name: Deploy static v86 site to GitHub Pages
+name: Build and Deploy v86 to GitHub Pages
 
 on:
   push:
     branches: [master]
 
 jobs:
-  deploy:
+  build-and-deploy:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout repository
+      - name: Checkout repo
         uses: actions/checkout@v3
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Build v86
+        run: make
 
       - name: Prepare build folder
         run: |
           mkdir build
-          cp index.html build/ || echo "index.html not found"
-          cp v86.js build/ || echo "v86.js not found"
-          cp v86.wasm build/ || echo "v86.wasm not found"
+          cp index.html build/
+          cp v86.js build/
+          cp v86.wasm build/
           [ -d bios ] && cp -r bios build/
           [ -d images ] && cp -r images build/
           [ -d lib ] && cp -r lib build/
