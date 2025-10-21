@@ -1,59 +1,19 @@
-name: Fast Build and Deploy v86 to GitHub Pages
+name: Deploy Prebuilt v86 to GitHub Pages
 
 on:
   push:
     branches: [master]
 
 jobs:
-  build-and-deploy:
+  deploy:
     runs-on: ubuntu-latest
 
     steps:
       - name: Checkout repo
         uses: actions/checkout@v3
 
-      - name: Setup Node.js 18
-        uses: actions/setup-node@v3
-        with:
-          node-version: '18'
-
-      - name: Setup Rust
-        uses: actions-rs/toolchain@v1
-        with:
-          toolchain: stable
-          override: true
-
-      - name: Add wasm32 target
-        run: rustup target add wasm32-unknown-unknown
-
-      - name: Cache node_modules
-        uses: actions/cache@v3
-        with:
-          path: |
-            ~/.npm
-            node_modules
-          key: ${{ runner.os }}-node-${{ hashFiles('package-lock.json') }}
-          restore-keys: |
-            ${{ runner.os }}-node-
-
-      - name: Install dependencies
-        run: npm install
-
-      - name: Build v86 (skip tests)
-        run: make all
-
-      - name: Prepare build folder
-        run: |
-          mkdir -p build
-          cp index.html build/
-          cp v86.js build/
-          cp v86.wasm build/
-          [ -d bios ] && cp -r bios build/
-          [ -d images ] && cp -r images build/
-          [ -d lib ] && cp -r lib build/
-
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v3
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./build
+          publish_dir: ./
