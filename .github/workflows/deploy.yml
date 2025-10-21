@@ -31,7 +31,7 @@ jobs:
         run: npm install
 
       - name: Build only v86.js and v86.wasm (skip tests)
-        run: make v86.js
+        run: make all
 
       - name: Prepare build folder
         run: |
