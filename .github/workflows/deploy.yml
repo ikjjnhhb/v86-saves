@@ -17,6 +17,15 @@ jobs:
         with:
           node-version: '18'
 
+      - name: Setup Rust
+        uses: actions-rs/toolchain@v1
+        with:
+          toolchain: stable
+          override: true
+
+      - name: Add wasm32 target
+        run: rustup target add wasm32-unknown-unknown
+
       - name: Cache node_modules
         uses: actions/cache@v3
         with:
@@ -30,7 +39,7 @@ jobs:
       - name: Install dependencies
         run: npm install
 
-      - name: Build only v86.js and v86.wasm (skip tests)
+      - name: Build v86 (skip tests)
         run: make all
 
       - name: Prepare build folder
