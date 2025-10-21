@@ -44,7 +44,7 @@ jobs:
 
       - name: Prepare build folder
         run: |
-          mkdir build
+          mkdir -p build
           cp index.html build/
           cp v86.js build/
           cp v86.wasm build/
