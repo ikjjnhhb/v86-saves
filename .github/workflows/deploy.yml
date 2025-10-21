@@ -1,4 +1,4 @@
-name: Build and Deploy v86 to GitHub Pages
+name: Fast Build and Deploy v86 to GitHub Pages
 
 on:
   push:
@@ -11,16 +11,21 @@ jobs:
       - name: Checkout repo
         uses: actions/checkout@v3
 
-      - name: Setup Node.js
+      - name: Setup Node.js 18
         uses: actions/setup-node@v3
         with:
           node-version: '18'
 
-      - name: Install dependencies
-        run: npm install
+      - name: Install dependencies (with cache)
+        uses: actions/cache@v3
+        with:
+          path: node_modules
+          key: ${{ runner.os }}-node-${{ hashFiles('package-lock.json') }}
+        # fallback if cache misses
+      - run: npm ci
 
-      - name: Build v86
-        run: make
+      - name: Build only v86.js and v86.wasm (skip tests)
+        run: make v86.js
 
       - name: Prepare build folder
         run: |
